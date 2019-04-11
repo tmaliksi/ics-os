@@ -24,6 +24,11 @@ although a user procedure call is in the works
 
 #include "dex32API.h"
 
+int kchown(int fd, int uid, int gid){
+	printf("Changing owner of fd=%d to user id=%d and group id=%d\n", fd, uid, gid);
+	return 0;
+};
+
 int dex32_getversion(){
    return DEX32_OSVER;
 };
@@ -174,8 +179,9 @@ void api_init(){
    api_addsystemcall(0x9C,kb_ready,0,0);
    api_addsystemcall(0x9D,write_text,0,0);
    api_addsystemcall(0x9E,write_char,0,0);
-   api_addsystemcall(0x9F,env_getenv,0,0);
-   api_addsystemcall(0xA0,env_setenv,0,0);
+   api_addsystemcall(0x9F,kchown,0,0);
+   api_addsystemcall(0xA0,env_getenv,0,0);
+   api_addsystemcall(0xA1,env_setenv,0,0);
 };
 
 
@@ -223,5 +229,4 @@ DWORD api_syscall(DWORD fxn,DWORD val,DWORD val2,
       current_process->op_success=1;
    }
    return retval;        
-};      
-
+};
