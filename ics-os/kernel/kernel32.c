@@ -75,6 +75,7 @@ extern void textcolor(unsigned char c);
 //order is important for some include files, DO NOT CHANGE!
 #include <stdarg.h>
 #include <limits.h>
+#include <math.h>
 
 #include "build.h"
 #include "version.h"
@@ -420,7 +421,7 @@ void dex_init(){
 
    printf("Getting date and time...");
    getdatetime(&date);
-   getmonthname(date.month,temp);
+   getmonthname(date.month);
    printf("[OK]\n");   
 
    //Install the built-in floppy disk driver

@@ -1,8 +1,11 @@
+
+
 DWORD time_count = 0,  //used to store the number of seconds since dex was booted
 aux_time2=0;   //since the OS has the timer set to interrupt 200 times a second
                //an auxillary counter is required so that it increments time_count
                //if it reaches 200
-               
+              
+
 int time_monthdays[12]= {0,31,59,90,120,151,181,212,243,273,304,334,365}; 
 
 //the tme returned by the timer chip is in BCD, so we have to
@@ -17,12 +20,13 @@ DWORD bcdtobinary(DWORD b)
 
   ;};
 
-char *getmonthname(int month,char *str)
+char *getmonthname(int month)
   {
+     char* str;
      switch (month)
        {
          case 1 : strcpy(str,"January"); break;
-         case 2 : strcpy(str,"Febuary"); break;
+         case 2 : strcpy(str,"February"); break;
          case 3 : strcpy(str,"March");break;
          case 4 : strcpy(str,"April");break;
          case 5 : strcpy(str,"May");break;
@@ -32,10 +36,11 @@ char *getmonthname(int month,char *str)
          case 9 : strcpy(str,"September");break;
          case 10: strcpy(str,"October");break;
          case 11: strcpy(str,"November");break;
-         case 12: strcpy(str,"Decemeber");break;
+         case 12: strcpy(str,"December");break;
        };
     return str;
   };
+
 
 char *datetostr(dex32_datetime *d,char *str)
   {
@@ -65,7 +70,7 @@ void getdatetime(dex32_datetime *d) //gets the date nd time
      outportb(0x70,4);
      //delay(1);
      x=inportb(0x71);
-     d->hour=bcdtobinary(x);
+     d->hour=bcdtobinary(x) + 8;
 
      outportb(0x70,0x7);
      //delay(1);
@@ -82,6 +87,9 @@ void getdatetime(dex32_datetime *d) //gets the date nd time
      x=inportb(0x71);
      d->year=bcdtobinary(x);
      if (d->year<80) d->year+=2000; //adjust for the year 2000
+
+     strcpy(d->str_day, getDay());
+
   };
   
 //returns time in milliseconds
@@ -225,3 +233,22 @@ void time_init()
     //update system time
     getdatetime(&time_systime);
 };
+
+
+char* getDay(){
+
+  double no_of_days = time()/86400;
+  int a = no_of_days;
+  char* value = NULL;
+
+  switch((a % 7)-3){
+    case(0):  strcpy(value, "Thursday");break;
+    case(1):  strcpy(value,"Friday") ;break;
+    case(2):  strcpy(value, "Saturday");break;
+    case(3):  strcpy(value, "Sunday");break;
+    case(4):  strcpy(value, "Monday");break;
+    case(5):  strcpy(value, "Tuesday");break;
+    case(6):  strcpy(value, "Wednesday");break;
+  }
+  return value;
+}

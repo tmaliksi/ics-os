@@ -10,7 +10,7 @@
 #define DEX_TIME_H
 
 typedef struct _dex32_datetime {
-    int month,year,day,hour,min,sec,ms,adj;
+    int month,year,day,hour,min,sec,ms,adj,str_day	;
 } dex32_datetime;
 
 extern DWORD time_count,  //used to store the number of seconds since dex was booted
@@ -25,5 +25,8 @@ char *datetostr(dex32_datetime *d,char *str);
 void getdatetime(dex32_datetime*); //gets the date nd time
 void dex32_set_timer(DWORD rate);
 int time();
+char *getDay();
+char* getmonthname(int month);
+
 
 #endif

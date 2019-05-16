@@ -822,10 +822,29 @@ int console_execute(const char *str){
       module_listfxn(u);
    }else
    if (strcmp(u,"time") == 0){   //-- Displays date and time.
-      printf("%d/%d/%d %d:%d.%d (%d total seconds since 1970)\n",time_systime.day,
-               time_systime.month, time_systime.year,
-               time_systime.hour, time_systime.min,
-               time_systime.sec,time());
+      u=strtok(0," ");
+      printf("%s\n",u);
+      if(strcmp(u,time_systime.str_day) == 0){
+         printf("%d/%d/%d %d:%d.%d (%s)\n",time_systime.day,
+            time_systime.month, time_systime.year,
+            time_systime.hour, time_systime.min,
+            time_systime.sec, time_systime.str_day);
+         printf("%s %d,%d %d:%d.%d (%s)\n", getmonthname(time_systime.month), time_systime.day,
+            time_systime.year, time_systime.hour, time_systime.min,
+            time_systime.sec, time_systime.str_day);
+      }else{
+         char *time = strtok(0,"\"");
+         char *newvalue = strtok(u,"\"");
+         printf("%s\n", newvalue);
+         printf("%s\n", time);
+         char *date = strtok(newvalue, " ");
+         if(strlen(newvalue) == 5){
+            
+            char *hour = strtok(newvalue, ":");
+            char *min = strtok(newvalue, "\n");
+            printf("%s %s %s", date, hour, min);
+         }
+      }
    }else
    if (strcmp(u,"set") == 0){    //-- Sets an environment variable. Args: <key>=<value>
       u=strtok(0," ");
@@ -871,14 +890,6 @@ int console_execute(const char *str){
                printf("Usage: cc <name.exe> <name.c>\n");
          }
       }
-   }else
-   if (strcmp(u,"add") == 0){
-   	int a, b;
-   	u = strtok(0," ");
-   	a = atoi(u);
-   	u = strtok(0," ");
-   	b = atoi(u);
-   	printf("%d + %d = %d\n",a,b,a+b);
    }else
    if (u[0] == '$'){                      //-- Sends message to a device.
       int i, devid;

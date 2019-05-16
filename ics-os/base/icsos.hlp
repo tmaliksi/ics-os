@@ -1,6 +1,6 @@
 ICS-OS Commands
 ---------------
-875:   if (strcmp(u,"add") == 0){
+827:      if(strcmp(u,time_systime.str_day) == 0){
 cc- Builds a C program (invokes tcc.exe). Args: <name.exe> <name.c>
 cd- Changes working directory. Args: <directory>
 cls- Clears the screen. 
