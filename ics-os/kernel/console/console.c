@@ -1,11 +1,11 @@
-/* 
+/*
    ==========================================================================
    Console.c
    Author: Joseph Emmanuel Dayo
    Date updated:December 6, 2002
    Description: A kernel mode console that is used for debugging the kernel
    and testing new kernel features.
-                
+
     DEX educational extensible operating system 1.0 Beta
     Copyright (C) 2004  Joseph Emmanuel DL Dayo
 
@@ -21,7 +21,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
    ==========================================================================
 */
 
@@ -36,7 +36,7 @@ void runner(){
    //printf("Hello user thread!\n");
 }
 
-  
+
 /*A console mode get string function terminates
 upon receving \r */
 void getstring(char *buf, DEX32_DDL_INFO *dev){
@@ -44,7 +44,7 @@ void getstring(char *buf, DEX32_DDL_INFO *dev){
    char c;
    do{
       c=getch();
-      if (c=='\r' || c=='\n' || c==0xa) 
+      if (c=='\r' || c=='\n' || c==0xa)
          break;
 
       if (c=='\b' || (unsigned char)c == 145){
@@ -52,18 +52,18 @@ void getstring(char *buf, DEX32_DDL_INFO *dev){
             i--;
             if (Dex32GetX(dev)==0){
                Dex32SetX(dev,79);
-               if (Dex32GetY(dev)>0) 
+               if (Dex32GetY(dev)>0)
                   Dex32SetY(dev,Dex32GetY(dev)-1);
             }else{
                Dex32SetX(dev,Dex32GetX(dev)-1);
-            }     
+            }
             Dex32PutChar(dev,Dex32GetX(dev),Dex32GetY(dev),' ',Dex32GetAttb(dev));
          };
       }else{
          if (i<256){  //maximum command line is only 255 characters
             Dex32PutChar(dev,Dex32GetX(dev),Dex32GetY(dev),buf[i]=c,Dex32GetAttb(dev));
             i++;
-            Dex32SetX(dev,Dex32GetX(dev)+1);     
+            Dex32SetX(dev,Dex32GetX(dev)+1);
             if (Dex32GetX(dev)>79){
                Dex32SetX(dev,0);
                Dex32NextLn(dev);
@@ -74,7 +74,7 @@ void getstring(char *buf, DEX32_DDL_INFO *dev){
       Dex32PutChar(dev,Dex32GetX(dev),Dex32GetY(dev),' ',Dex32GetAttb(dev));
       update_cursor(Dex32GetY(dev),Dex32GetX(dev));
    }while (c!='\r');
-    
+
    Dex32SetX(dev,0);
    Dex32NextLn(dev);
    buf[i]=0;
@@ -116,22 +116,22 @@ int user_fork(){
    #ifdef DEBUG_FORK
    printf("user_fork called\n");
    #endif
-    
+
    //enable interrupts since we want the process dispatcher to take control
    storeflags(&flags);
    startints();
-   
-   //Calls pd_forkmodule() from kernel/process/pdispatch.c 
+
+   //Calls pd_forkmodule() from kernel/process/pdispatch.c
    hdl = pd_forkmodule(current_process->processid);
 
-   //inform the CPU scheduler, hopefully to schedule process_dispatcher() 
-   taskswitch();  
+   //inform the CPU scheduler, hopefully to schedule process_dispatcher()
+   taskswitch();
 
-   //id = pd_ok(hdl); 
+   //id = pd_ok(hdl);
    id = pd_dispatched(hdl);
    while (!(id = pd_dispatched(hdl))){ //wait for the process to be dispatched before returning
-      taskswitch(); //try to wakeup process_dispatcher() 
-      ; 
+      taskswitch(); //try to wakeup process_dispatcher()
+      ;
    }
 
    if (curval != current_process->processid){ //this is the child
@@ -140,12 +140,12 @@ int user_fork(){
       //pd_ok(hdl);
       retval = 0;
    };
-      
+
    if (curval == current_process->processid){ // this is the parent
       pd_ok(hdl);          //free the createp_queue node used by the child
       retval = id;
    };
-      
+
    restoreflags(flags);
    return retval;
 };
@@ -159,12 +159,12 @@ int user_execp(char *fname, DWORD mode, char *params){
    char *buf;
    vfs_stat filestat;
    file_PCB *f = openfilex(fname, 0);              //Open the executable
-  
+
    if (f!=0){                                      //The executable was successfully opened
       fstat(f,&filestat);                          //Get some statistics about the executable
       size = filestat.st_size;                     //Store the size of the executable
       buf = (char*)malloc(filestat.st_size+511);   //Allocate memory for the executable
-      
+
       //tell the vfs to increase buffersize to speed up reads
       vfs_setbuffer(f, 0, filestat.st_size, FILE_IOFBF);
 
@@ -174,10 +174,10 @@ int user_execp(char *fname, DWORD mode, char *params){
          printf("execp(): adding module..\n");
          #endif
 
-        
-         //Calls addmodule() from kernel/process/pdispatch.c 
+
+         //Calls addmodule() from kernel/process/pdispatch.c
          int hdl= addmodule(fname, buf, userspace, mode, params, showpath(temp), getprocessid());
-        
+
          #ifdef DEBUG_USER_PROCESS
          printf("execp(): done.\n");
          #endif
@@ -187,11 +187,11 @@ int user_execp(char *fname, DWORD mode, char *params){
          #ifdef DEBUG-USER_PROCESS
          printf("execp(): parent waiting for child to finish\n");
          #endif
-    
-         //loop until the new process has been dispatched    
-         while (!(id = pd_ok(hdl))) 
+
+         //loop until the new process has been dispatched
+         while (!(id = pd_ok(hdl)))
             ;
-         
+
          fg_setmykeyboard(id);
 
          //wait for the child process to finish
@@ -219,12 +219,12 @@ int exec(char *fname, DWORD mode, char *params){
       vfs_stat fileinfo;
       fstat(f,&fileinfo);
       size = fileinfo.st_size;
-     
+
       buf=(char*)malloc(size+511);
-     
+
       if (fread(buf,size,1,f) == size)
          id=dex32_loader(fname, buf, userspace, mode, params, showpath(temp), getprocessid());
-      
+
       free(buf);
       fclose(f);
       return id;
@@ -246,9 +246,9 @@ int user_exec(char *fname,DWORD mode,char *params){
       buf=(char*)malloc(size+511);
       fread(buf, size, 1, f);
       hdl = addmodule(fname, buf, userspace, mode, params, showpath(temp), getprocessid());
-      while (!pd_ok(hdl)) 
+      while (!pd_ok(hdl))
          ;
-     
+
       free(buf);
       fclose(f);
       return id;
@@ -264,25 +264,25 @@ int loadDLL(char *name, char *p){
    char *buf;
 
    handle=openfilex(name,FILE_READ);
-   if (!handle) 
+   if (!handle)
       return -1;
    fstat(handle,&filestat);
    vfs_setbuffer(handle,0,filestat.st_size,FILE_IOFBF);
    //get filesize and allocate memory
    fsize= filestat.st_size;
    buf=(char*)malloc(fsize);
- 
-   //load the file from the disk 
+
+   //load the file from the disk
    fread(buf, fsize, 1, handle);
- 
+
    /*Tell the process dispatcher to map the file into memory and
       create data structures necessary for managing dynamic libraries*/
    hdl = addmodule(name, buf, lmodeproc, PE_USERDLL, p, 0, getprocessid());
- 
+
    //wait until the library has been loaded before we continue since addmodule returns immediately
    while (!(libid = pd_ok(hdl)))
       ;
- 
+
    //done!
    free(buf);
 
@@ -309,7 +309,7 @@ int console_showfile(char *s, int wait){
    DEX32_DDL_INFO *myddl;
    handle=openfilex(s, FILE_READ);
 
-   if (!handle) 
+   if (!handle)
       return -1;
    fstat(handle,&fileinfo);
    size = fileinfo.st_size;
@@ -320,13 +320,13 @@ int console_showfile(char *s, int wait){
    textbackground(BLACK);
    fread(buf, size, 1, handle);
    for (i=0; i<size; i++){
-      if (buf[i]!='\r') 
+      if (buf[i]!='\r')
          printf("%c",buf[i]);
-      if (myddl->lines%25==0){ 
+      if (myddl->lines%25==0){
          char c;
          printf("\nPress any key to continue, 'q' to quit\n");
          c=getch();
-         if (c=='q') 
+         if (c=='q')
             break;
       };
    };
@@ -367,7 +367,7 @@ void prompt_parser(const char *promptstr, char *prompt){
          };
          i3=0;
          for (i2=i+1; promptstr[i2]&&i2 < 255; i2++){
-            if (promptstr[i2] == '%' || i3 >= 10) 
+            if (promptstr[i2] == '%' || i3 >= 10)
                break;
             command[i3]=promptstr[i2];
             i3++;
@@ -381,15 +381,15 @@ void prompt_parser(const char *promptstr, char *prompt){
       };
    };
 };
-  
+
 
 
 
 /*An auxillary function for qsort for comparing two elements, based on size*/
 int console_ls_sortsize(vfs_node *n1, vfs_node *n2){
-   if (n1->size > n2->size) 
+   if (n1->size > n2->size)
       return -1;
-   if (n2->size > n1->size) 
+   if (n2->size > n1->size)
       return 1;
    return 0;
 };
@@ -401,16 +401,16 @@ int console_ls_sortname(vfs_node *n1, vfs_node *n2){
 
    if ( !(n1->attb & FILE_DIRECTORY) && (n2->attb & FILE_DIRECTORY))
       return 1;
-        
+
    return strsort(n1->name,n2->name);
 };
 
 /* ==================================================================
    console_ls(int style):
-   
+
    *list the contents of the current directory to the screen
-    style = 1      : list format 
-    style = others : wide format  
+    style = 1      : list format
+    style = others : wide format
 */
 /*lists the files in the current directory to the console screen*/
 void console_ls(int style, int sortmethod){
@@ -419,31 +419,31 @@ void console_ls(int style, int sortmethod){
    int totalbytes=0, freebytes=0;
    int totalfiles=0, i;
    char cdatestr[20], mdatestr[20], temp[20];
-    
+
    //obtain total number of files
    totalfiles = vfs_listdir(dptr, 0, 0);
-    
+
    buffer = (vfs_node*) malloc( totalfiles * sizeof(vfs_node));
 
    //Place the list of files obtained from the VFS into a buffer
-   totalfiles = vfs_listdir(dptr, buffer, totalfiles * sizeof(vfs_node));     
-    
+   totalfiles = vfs_listdir(dptr, buffer, totalfiles * sizeof(vfs_node));
+
    //Sort the list
    if (sortmethod == SORT_NAME)
       qsort(buffer, totalfiles, sizeof(vfs_node), console_ls_sortname);
    else if (sortmethod == SORT_SIZE)
       qsort(buffer, totalfiles, sizeof(vfs_node), console_ls_sortsize);
-        
+
    textbackground(BLUE);
    textcolor(WHITE);
-    
+
    if (style==1)
       printf("%-25s %10s %14s %14s\n","Filename", "Size(bytes)", "Attribute", "Date Modified");
-        
+
    textbackground(BLACK);
 
    for (i=0; i < totalfiles; i++){
-      char fname[255];   
+      char fname[255];
       if (style == 0){ //wide view style
          if (buffer[i].attb&FILE_MOUNT)
             textcolor(LIGHTBLUE);
@@ -458,8 +458,8 @@ void console_ls(int style, int sortmethod){
          fname[24]=0;
          printf("%-25s ",fname);
          totalbytes+=buffer[i].size;
-            
-         if ( (i+1)%3==0 && (i+1 < totalfiles) ) 
+
+         if ( (i+1)%3==0 && (i+1 < totalfiles) )
             printf("\n");
 
       };
@@ -473,16 +473,16 @@ void console_ls(int style, int sortmethod){
             textcolor(YELLOW);
          else
             textcolor(WHITE);
-                    
+
          strcpy(fname,buffer[i].name);
          fname[24]=0;
          printf("%-25s ",fname);
-            
+
          textcolor(WHITE);
          printf("%10d %14s %14s\n",buffer[i].size,
          vfs_attbstr(&buffer[i],temp), datetostr(&buffer[i].date_modified,
                        mdatestr));
-                       
+
          totalbytes+=buffer[i].size;
 
 
@@ -492,16 +492,16 @@ void console_ls(int style, int sortmethod){
             printf("Press Q to quit or any other key to continue ...");
             c=getch();
             printf("\n");
-            if (c=='q'||c=='Q') 
+            if (c=='q'||c=='Q')
                break;
          };
-      };       
+      };
    };
-    
+
    textcolor(WHITE);
    printf("\nTotal Files: %d  Total Size: %d bytes\n", totalfiles, totalbytes);
    free(buffer);
-    
+
 };
 
 /* ==================================================================
@@ -514,25 +514,25 @@ int console_execute(const char *str){
    char *u;
    int command_length = 0;
    signed char mouse_x, mouse_y, last_mouse_x=0, last_mouse_y=0;
-  
+
    //make a copy so that strtok wouldn't ruin str
    strcpy(temp,str);
    u=strtok(temp," ");
-  
-   if (u == 0) 
+
+   if (u == 0)
       return;
-  
-   command_length = strlen(u);    
-    
+
+   command_length = strlen(u);
+
    //check if a pathcut command was executed
    if (u[command_length - 1] == ':'){
       char temp[512];
-      sprintf(temp,"cd %s",u);            
-      console_execute(temp); 
-   }else 
+      sprintf(temp,"cd %s",u);
+      console_execute(temp);
+   }else
    if (strcmp(u,"fgman") == 0){  //--  Foreground manager
       fg_set_state(1);
-   }else 
+   }else
    if (strcmp(u,"mouse") == 0){  //--  Activate the mouse
       while (!kb_ready()){
          get_mouse_pos(&mouse_x,&mouse_y);
@@ -541,14 +541,14 @@ int console_execute(const char *str){
             get_mouse_pos(&mouse_x,&mouse_y);
          }
          last_mouse_x=mouse_x;
-         last_mouse_y=mouse_y; 
+         last_mouse_y=mouse_y;
       }
-   }else 
+   }else
    if (strcmp(u,"shutdown") == 0){  //-- Shuts down the system.
       sendmessage(0,MES_SHUTDOWN,0);
    }else
    if (strcmp(u,"procinfo") == 0){  //-- Show process information. Args: <pid>
-      int pid;             
+      int pid;
       u=strtok(0," ");
       if (u!=0){
          pid = atoi(u);
@@ -560,10 +560,10 @@ int console_execute(const char *str){
    }else
    if (strcmp(u,"pause") == 0){     //-- Waits for a key press
       printf("press any key to continue or 'q' to quit..\n");
-      if (getch() == 'q') 
+      if (getch() == 'q')
          return -1;
    }else
-   if (strcmp(u,"lspcut") == 0){    //-- Shows a list of path aliases. 
+   if (strcmp(u,"lspcut") == 0){    //-- Shows a list of path aliases.
       vfs_showpathcuts();
    }else
    if (strcmp(u,"pcut") == 0){      //-- Creates a path alias. Args: <alias:> [path]
@@ -574,8 +574,8 @@ int console_execute(const char *str){
          if (vfs_addpathcut(u2,u3) == -1){
             printf("Invalid pathcut specified.\n");
          }else{
-            printf("Pathcut added.\n"); 
-         }                               
+            printf("Pathcut added.\n");
+         }
       }else{
          printf("Wrong number of parameters specified.\n");
       }
@@ -583,12 +583,12 @@ int console_execute(const char *str){
    if (strcmp(u,"rmdir") == 0){     //-- Removes a directory and all its subdirectories. Args: <dirname>
       char *u2 = strtok(0," ");
       if (u2 != 0){
-         char c;                
+         char c;
          printf("*Warning!* This will delete all files and subdirectories!\n");
          printf("Do you wish to continue? (y/n):");
          c = getch();
          if (c == 'y'){
-            printf("Please wait..\n");                        
+            printf("Please wait..\n");
             if (rmdir(u2) != -1)
                printf("Remove directory successful!\n");
             else
@@ -597,7 +597,7 @@ int console_execute(const char *str){
             printf("Remove directory cancelled.\n");
          }
       }else{
-         printf("Invalid parameter.\n"); 
+         printf("Invalid parameter.\n");
       }
    }else
    if (strcmp(u,"rempcut") == 0){   //-- Removes a path alias. Args: <alias:>
@@ -607,40 +607,40 @@ int console_execute(const char *str){
          if (vfs_removepathcut(u2) == -1)
             printf("Invalid Pathcut or pathcut not found\n");
          else
-            printf("Pathcut removed.\n");   
+            printf("Pathcut removed.\n");
       }else{
          printf("Wrong number of parameters specified\n");
-      }               
+      }
    }else
-   if (strcmp(u,"newconsole") == 0){   //-- Creates a new console.  
-      //create a new console         
+   if (strcmp(u,"newconsole") == 0){   //-- Creates a new console.
+      //create a new console
       console_new();
-      printf("New console thread created.\n");                   
-   }else  
+      printf("New console thread created.\n");
+   }else
    if (strcmp(u,"ver") == 0) {         //-- Shows version information.
       printf("%s\n",dex32_versionstring);
       printf("%s\n",OS_VERSION);
    }else
-   if (strcmp(u,"cpuid") == 0){        //-- Displays CPU information. 
+   if (strcmp(u,"cpuid") == 0){        //-- Displays CPU information.
       hardware_cpuinfo mycpu;
       hardware_getcpuinfo(&mycpu);
       hardware_printinfo(&mycpu);
-   }else            
+   }else
    if (strcmp(u,"exit") == 0){         //-- Exits a console session.
       fg_exit();
-      exit(0);              
-   }else  
-   if (strcmp(u,"echo") == 0){         //-- Displays a string. Args: <string>  
+      exit(0);
+   }else
+   if (strcmp(u,"echo") == 0){         //-- Displays a string. Args: <string>
       u=strtok(0,"\n");
-      if (u!=0)              
+      if (u!=0)
          printf("%s\n",u);
-   }else  
-   if (strcmp(u,"use") == 0){          //-- Tells the extension manager to use the extension: Args: <extension>  
+   }else
+   if (strcmp(u,"use") == 0){          //-- Tells the extension manager to use the extension: Args: <extension>
       u=strtok(0," ");
       if (extension_override(devmgr_getdevicebyname(u),0) == -1){
-         printf("Unable to install extension %s.\n",u);                
-      };            
-   }else        
+         printf("Unable to install extension %s.\n",u);
+      };
+   }else
    if (strcmp(u,"off") == 0){          //-- Power off the machine.
       dex32apm_off();
    }else
@@ -667,7 +667,7 @@ int console_execute(const char *str){
    if (strcmp(u,"procs") == 0 || strcmp(u,"ps") == 0){  //-- List the running processes. "ps" can also be used.
       show_process();
    }else
-   if (strcmp(u,"cls") == 0 || strcmp(u,"clear") == 0){          //-- Clears the screen. 
+   if (strcmp(u,"cls") == 0 || strcmp(u,"clear") == 0){          //-- Clears the screen.
       clrscr();
       //char *stk=malloc(10240);
       //createuthread(runner,stk,10240);
@@ -684,58 +684,58 @@ int console_execute(const char *str){
             printf("%s umounted.\n",u);
       }else{
          printf("Missing parameter.\n");
-      }                    
+      }
    }else
-   if (strcmp(u,"mount") == 0){        //-- Mounts a device. Args: fat/cdfs <partition/device> <mount point> 
+   if (strcmp(u,"mount") == 0){        //-- Mounts a device. Args: fat/cdfs <partition/device> <mount point>
       char *fsname,*devname,*location;
       fsname=strtok(0," ");
       devname=strtok(0," ");
       location=strtok(0," ");
-               
+
       if (vfs_mount_device(fsname, devname, location) == -1)
          printf("mount not successful.\n");
       else
-         printf("mount successful.\n");  
+         printf("mount successful.\n");
          //fat12_mount_root(root,floppy_deviceid);
    }else
    if (strcmp(u,"pwd") == 0){         //-- Shows the current working directory.
       char temp[255];
       printf("%s\n",showpath(temp));
    }else
-   if (strcmp(u,"lsmod") == 0){        //-- Shows the list of loaded libraries and modules. 
+   if (strcmp(u,"lsmod") == 0){        //-- Shows the list of loaded libraries and modules.
       showlibinfo();
    }else
    if (strcmp(u,"mem") == 0){          //-- Shows memory information.
       meminfo();
    }else
-   if (strcmp(u,"mkdir") == 0){        //-- Creates a directory. Args: <directory name> 
+   if (strcmp(u,"mkdir") == 0){        //-- Creates a directory. Args: <directory name>
       u=strtok(0," ");
       if (u!=0){
          if (mkdir(u) == -1)
             printf("mkdir failed.\n");
       }
-   }else       
+   }else
    if (strcmp(u,"run") == 0){          //-- Executes a batch file or script. Args: <script>
       u=strtok(0," ");
       if (u!=0){
          if (script_load(u) == -1){
             printf("console: Error loading script file.\n");
-         };            
+         };
       }
-   }else    
-   if (strcmp(u,"ls") == 0||strcmp(u,"dir") == 0){ //-- Shows directory listing. Args: [-l | -osize | -oname] 
+   }else
+   if (strcmp(u,"ls") == 0||strcmp(u,"dir") == 0){ //-- Shows directory listing. Args: [-l | -osize | -oname]
       int style=0, ordering = 0;
       char v[20];
-   
+
       u=strtok(0," ");
       if (u != 0){
          do {
             strcpy(v,u);
-            if (strcmp(v,"-l") == 0) 
+            if (strcmp(v,"-l") == 0)
                style=1;
-            if (strcmp(v,"-oname") == 0) 
+            if (strcmp(v,"-oname") == 0)
                ordering  = 0;
-            if (strcmp(v,"-osize") == 0) 
+            if (strcmp(v,"-osize") == 0)
                ordering  = 1;
             u=strtok(0," ");
          } while (u!=0);
@@ -760,15 +760,15 @@ int console_execute(const char *str){
    if (strcmp(u,"ren") == 0){            //-- Renames a file. Args: <oldname> <newname>
       char *u2,*u3;
       u2=strtok(0," ");
-      u3=strtok(0," ");               
+      u3=strtok(0," ");
       if (u2!=0 && u3!=0){
-         if (rename(u2, u3)) 
+         if (rename(u2, u3))
             printf("File renamed.\n");
          else
             printf("Error renaming file.\n");
       }else{
-         printf("Missing parameter.\n"); 
-      }   
+         printf("Missing parameter.\n");
+      }
    }else
    if (strcmp(u,"type") == 0 || strcmp(u,"cat") == 0 ){ //-- Displays the contents of a file. Args: <filename> [-p]
       u=strtok(0," ");
@@ -788,9 +788,9 @@ int console_execute(const char *str){
                printf("Copy failed. Error while copying.\n");
                printf("Destination directory might not be present.\n");
             };
-         };  
+         };
       };
-   }else              
+   }else
    if (strcmp(u,"cd") == 0){     //-- Changes working directory. Args: <directory>
       u=strtok(0," ");
       if (u!=0){
@@ -798,20 +798,20 @@ int console_execute(const char *str){
             printf("cd: Cannot find directory\n");
       }else{
          changedirectory(0); //go to working directory
-      } 
+      }
    }else
-   if (strcmp(u,"loadmod") == 0){   //-- Loads a shared library (.dll or .so). Args: <module filename> 
+   if (strcmp(u,"loadmod") == 0){   //-- Loads a shared library (.dll or .so). Args: <module filename>
       u=strtok(0," ");
       if (u!=0){
          if (loadDLL(u,str) == -1)
             printf("Unable to load %s.\n",u);
          else
-            printf("Load module Successful.\n");  
+            printf("Load module Successful.\n");
       }else{
             printf("missing parameter.\n");
       }
    }else
-   if (strcmp(u,"lsdev") == 0){  //-- Lists all modules currently installed and available. 
+   if (strcmp(u,"lsdev") == 0){  //-- Lists all modules currently installed and available.
       devmgr_showdevices();
    }else
    if (strcmp(u,"lsext") == 0){  //-- Lists all extensions.
@@ -833,13 +833,9 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char *time = strtok(0,"\"");
          char *newvalue = strtok(u,"\"");
          printf("%s\n", newvalue);
-         printf("%s\n", time);
-         char *date = strtok(newvalue, " ");
          if(strlen(newvalue) == 5){
-            
             char *hour = strtok(newvalue, ":");
             char *min = strtok(newvalue, "\n");
             printf("%s %s %s", date, hour, min);
@@ -854,8 +850,8 @@ int console_execute(const char *str){
          char *name  = strtok(u,"=");
          char *value = strtok(0,"\n");
          env_setenv(name, value, 1);
-      }; 
-   }else         
+      };
+   }else
    if (strcmp(u,"unload") == 0){ //-- Unloads a library. Args: <library name>
       u=strtok(0," ");
       if (u!=0){
@@ -901,18 +897,18 @@ int console_execute(const char *str){
       devicename[i] = 0;
       printf("Sending command to %s\n",devicename);
       devid = devmgr_finddevice(devicename);
-               
+
       if (devid != -1){
          if (devmgr_sendmessage(devid,DEVMGR_MESSAGESTR,str)==-1)
             printf("console: send_message() failed or not supported.\n");
       }else{
          printf("console: cannot find device.\n");
-      }   
+      }
 
    }else{         //ok it is not a command, maybe it's an executable?
       if (u!=0){
          char path[256]="", tmp[256];
-         env_getenv("PATH",path);     
+         env_getenv("PATH",path);
          if (strcmp(path,"")==0){
             strcpy(path,"/icsos/apps");
             sprintf(tmp,"%s/%s",path,u);
@@ -932,9 +928,9 @@ int console_execute(const char *str){
 };
 
 int console_new(){
-   //create a new console         
+   //create a new console
    char consolename[255];
-   sprintf(consolename,"console(%d)", console_first);    
+   sprintf(consolename,"console(%d)", console_first);
    return createkthread((void*)console, consolename, 200000);
 };
 
@@ -946,37 +942,37 @@ void console_main(){
    char last[256]="";
    char console_fmt[256]="%cdir% %% ";
    char console_prompt[256]="cmd >";
-    
-   DWORD ptr;
-    
-   myddl =Dex32CreateDDL();    
 
-    
+   DWORD ptr;
+
+   myddl =Dex32CreateDDL();
+
+
    Dex32SetProcessDDL(myddl, getprocessid());
    myfg = fg_register(myddl, getprocessid());
    fg_setforeground( myfg->id );
 
    clrscr();
    strcpy(last,"");
-    
-   if (console_first == 0) 
+
+   if (console_first == 0)
       script_load("/icsos/autoexec.bat");
-    
-   console_first++;  
+
+   console_first++;
    do{
       textcolor(WHITE);
       textbackground(BLACK);
       prompt_parser(console_fmt,console_prompt);
-    
+
       textcolor(LIGHTBLUE);
       printf("%s",console_prompt);
       textcolor(WHITE);
-    
+
       if (strcmp(s,"@@")!=0 && strcmp(s,"!!")!=0)
          strcpy(last,s);
-    
+
       getstring(s, myddl);
-   
+
       if (strcmp(s,"!")==0){
          sendtokeyb(last,&_q);
       }
@@ -984,8 +980,7 @@ void console_main(){
          sendtokeyb(last,&_q);
          sendtokeyb("\r",&_q);
       }
-      else   
+      else
          console_execute(s);
    } while (1);
 };
-
