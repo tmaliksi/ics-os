@@ -838,7 +838,7 @@ int console_execute(const char *str){
          char *date = strtok(u," ");
          printf("%s %s\n",date, ucopy);
          if(strlen(date) == 8){
-            char *time = ucopy = (0, "--s=\"");
+            char *time = ucopy = (0," ");
             char *hour = u = strtok(0, ":");
             char *min = strtok(date, "\"");
             printf("%s %s %s\n", time, hour, min);
