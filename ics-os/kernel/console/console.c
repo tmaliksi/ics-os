@@ -822,6 +822,7 @@ int console_execute(const char *str){
       module_listfxn(u);
    }else
    if (strcmp(u,"time") == 0){   //-- Displays date and time.
+       printf("%s\n",u);
       u=strtok(0," ");
       if(strcmp(u,time_systime.str_day) == 0){
          printf("%d/%d/%d %d:%d.%d (%s)\n",time_systime.day,
