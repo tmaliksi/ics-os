@@ -832,14 +832,15 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         u=strtok(0,"--s=\"");
-         char *date = strtok(0," ");
+         char *ucopy = u;
+         u=strtok(u,"--s=\"");
+         char *date = strtok(u," ");
          printf("%s %s\n",u, date);
          if(strlen(date) == 8){
-
+            char *time = (ucopy, "--s=\"");
             char *hour = u = strtok(0, ":");
             char *min = strtok(date, "\"");
-            printf("%s %s\n", hour, min);
+            printf("%s %s %s\n", time, hour, min);
          }
       }
    }else
