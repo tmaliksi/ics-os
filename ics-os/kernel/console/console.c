@@ -833,8 +833,8 @@ int console_execute(const char *str){
             time_systime.sec, time_systime.str_day);
       }else{
          u=strtok(u,"--s=\"");
-         char *date = u = strtok(0,"\t");
-         printf("%s\n",date);
+         char *date = strtok(u,"\t");
+         printf("%s %s\n",u, date);
          if(strlen(date) == 8){
 
             char *hour = u = strtok(0, ":");
