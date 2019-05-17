@@ -833,7 +833,7 @@ int console_execute(const char *str){
             time_systime.sec, time_systime.str_day);
       }else{
          u=strtok(u,"--s=");
-         char *date = strtok(u,"\"");
+         char *date = strtok(u,"\t\"");
          printf("%s\n",date);
          if(strlen(date) == 8){
 
