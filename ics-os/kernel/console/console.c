@@ -823,7 +823,6 @@ int console_execute(const char *str){
    }else
    if (strcmp(u,"time") == 0){   //-- Displays date and time.
       u=strtok(0," ");
-      printf("%s\n",u);
       if(strcmp(u,time_systime.str_day) == 0){
          printf("%d/%d/%d %d:%d.%d (%s)\n",time_systime.day,
             time_systime.month, time_systime.year,
@@ -834,12 +833,11 @@ int console_execute(const char *str){
             time_systime.sec, time_systime.str_day);
       }else{
          u=strtok(u,"--s=");
-         printf("%s\n",u);
          char *date = strtok(u,"\"");
          printf("%s\n", date);
          if(strlen(date) == 8){
-            char *hour = strtok(date, ":");
-            char *min = strtok(date, "\n");
+            char *hour = strtok(0, ":");
+            char *min = strtok(0, "\"");
             printf("%s %s\n", hour, min);
          }
       }
