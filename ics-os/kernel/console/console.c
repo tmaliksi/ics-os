@@ -837,9 +837,9 @@ int console_execute(const char *str){
          printf("%s\n",u);
          char *date = strtok(u,"\"");
          printf("%s\n", date);
-         if(strlen(newvalue) == 5){
+         if(strlen(date) == 8){
             char *hour = strtok(date, ":");
-            char *min = strtok(newvalue, "\n");
+            char *min = strtok(date, "\n");
             printf("%s %s\n", hour, min);
          }
       }
