@@ -835,11 +835,12 @@ int console_execute(const char *str){
       }else{
          u=strtok(u,"--s=");
          printf("%s\n",u);
-         char *newvalue = strtok(u,"\"");
-         printf("%s\n", newvalue);
+         char *date = strtok(u,"\"");
+         printf("%s\n", date);
          if(strlen(newvalue) == 5){
-            char *hour = strtok(newvalue, ":");
+            char *hour = strtok(date, ":");
             char *min = strtok(newvalue, "\n");
+            printf("%s %s\n", hour, min);
          }
       }
    }else
