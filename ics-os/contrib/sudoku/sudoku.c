@@ -76,7 +76,7 @@ char quitPrompt();
 
 main() {
 	char keypress_menu, keypress_game;
-	int timer=0;
+	int timer=0; //borrowed from previous implementation of TicTacToe
 	int timeLeft=0;
 
 	while(1) {
@@ -192,23 +192,22 @@ main() {
 						textcolor(LIGHTGRAY);
 					}
 				} else if(keypress_game>=49 && keypress_game<=57) {	//keypress value accepted from 1 to 9
-					if(write_Number[cl_x][cl_y]==0) {
+					if(write_Number[cl_x][cl_y]==0) {	//if number is valid, will light up GREEN; else will light up RED
 						int x;
-						valid = checker(cl_y,cl_x,(keypress_game-48)); // if number is valid, color LIGHTGREEN. else, LIGHTRED
+						valid = checker(cl_y,cl_x,(keypress_game-48));
 						if(valid==1) {
 							textcolor(LIGHTGREEN);
 							printf("%c",keypress_game);
-							screen_grid[cl_x][cl_y] = keypress_game-48;		// put number on grid
+							screen_grid[cl_x][cl_y] = keypress_game-48;
 							textcolor(LIGHTGRAY);
 							x=boardChecker();
 
-							if(x==1) {	// if boardChecker returns 1, game is finished and player won
+							if(x==1) {		//if boardChecker returns val 1
 								if(timer<0){
-									finaltime=0;
+									finaltime=0;	//will print time and the game has been won
 								}else{
 									finaltime=timeLeft-timer;
 								}
-
 								win=1;
 								break;
 							}
@@ -216,7 +215,7 @@ main() {
 						else {
 							textcolor(LIGHTRED);
 							printf("%c",keypress_game);
-							screen_grid[cl_x][cl_y] = keypress_game-48;		// put number on grid
+							screen_grid[cl_x][cl_y] = keypress_game-48;		//put number on grid
 							textcolor(LIGHTGRAY);
 							continue;
 						} 
@@ -225,11 +224,10 @@ main() {
 			}
 
 			if(win==1) break;
-			gotoxy(y_boardCoor+boardADDY,x_boardCoor+boardADDX); // go to the cell
+			gotoxy(y_boardCoor+boardADDY,x_boardCoor+boardADDX);
 
 			if(timer>=0) {
 				gotoxy(18,18);
-				// display remaining time in minutes:seconds
 				if((timer/10)%60<10) printf("Time remaining: %d:0%d",((timer/10)/60),((timer/10)%60));
 				else printf("Time remaining: %d:%d",((timer/10)/60),((timer/10)%60));
 				gotoxy(y_boardCoor+boardADDY,x_boardCoor+boardADDX);	
