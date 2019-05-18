@@ -834,6 +834,7 @@ int console_execute(const char *str){
             time_systime.sec, time_systime.str_day);
       }else{
          char *date, *time;
+         int i = 0;
          u = strtok(0,"=");
          date = u;
          while(date[i+2]!='\0'){
