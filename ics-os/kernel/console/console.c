@@ -836,13 +836,15 @@ int console_execute(const char *str){
          char *date, *time;
          int i = 0;
          u = strtok(0,"=");
-         strcpy(date,u);
-         while(date[i+1]!='\0'){
-           date[i] = date[i+1];                                                    // [4]
-           i++;
-         }
+         date = u;
+         // strcpy(date,u);
+         // while(date[i+1]!='\0'){
+         //   date[i] = date[i+1];                                                    // [4]
+         //   i++;
+         // }
          u = strtok(0,"\"");
-         strcpy(time,u);
+         // strcpy(time,u);
+         time = u;
          printf("%s %s\n",date, time);
          if(strlen(date) == 8){
             char *time = strtok(0," ");
