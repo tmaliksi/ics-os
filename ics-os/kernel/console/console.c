@@ -838,13 +838,8 @@ int console_execute(const char *str){
          u = strtok(0,"=");
          printf("%s\n",u);
          date = u;
-         // strcpy(date,u);
-         // while(date[i+1]!='\0'){
-         //   date[i] = date[i+1];                                                    // [4]
-         //   i++;
-         // }
+
          u = strtok(0,"\"");
-         // strcpy(time,u);
          time = u;
          printf("%s %s\n",date, time);
          if(strlen(date) == 8){
