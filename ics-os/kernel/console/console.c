@@ -832,9 +832,12 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char *date = strtok(u," ");
-         u=strtok(0," ");
-         printf("%s %s\n",date, u);
+         char *date, *time;
+         u = strtok(0," ");
+         data = u;
+         u = strtok(0," ");
+         time = u;
+         printf("%s %s\n",date, time);
          if(strlen(date) == 8){
             char *time = strtok(0," ");
             char *hour = u = strtok(0, ":");
