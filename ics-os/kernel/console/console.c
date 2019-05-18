@@ -832,7 +832,6 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         u=strtok(u,"--s=\"");
          char *date = strtok(u," ");
          u=strtok(0," ");
          printf("%s %s\n",date, u);
