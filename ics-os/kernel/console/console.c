@@ -833,6 +833,7 @@ int console_execute(const char *str){
             time_systime.sec, time_systime.str_day);
       }else{
          char *date, *time;
+         u = strtok(0,"=\"");
          date = u;
          u = strtok(0,"\"");
          time = u;
