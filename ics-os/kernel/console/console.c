@@ -405,6 +405,27 @@ int console_ls_sortname(vfs_node *n1, vfs_node *n2){
    return strsort(n1->name,n2->name);
 };
 
+char* strtoke(char *str, const char *delim)
+{
+  static char *start = NULL; /* stores string str for consecutive calls */
+  char *token = NULL; /* found token */
+  /* assign new start in case */
+  if (str) start = str;
+  /* check whether text to parse left */
+  if (!start) return NULL;
+  /* remember current start as found token */
+  token = start;
+  /* find next occurrence of delim */
+  start = strpbrk(start, delim);
+  /* replace delim with terminator and move start to follower */
+  if (start) *start++ = '\0';
+  /* done */
+  return token;
+}
+
+
+
+
 /* ==================================================================
    console_ls(int style):
 
@@ -833,7 +854,7 @@ int console_execute(const char *str){
             time_systime.sec, time_systime.str_day);
       }else{
          char *date, *time;
-         u = strtok(0,"=\"");
+         u = strtoke(0,"=\"");
          date = u;
          u = strtok(0,"\"");
          time = u;
