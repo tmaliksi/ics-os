@@ -836,6 +836,7 @@ int console_execute(const char *str){
          char *date, *time;
          int i = 0;
          u = strtok(0,"=");
+         printf("%s\n",u);
          date = u;
          // strcpy(date,u);
          // while(date[i+1]!='\0'){
