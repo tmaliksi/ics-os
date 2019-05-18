@@ -834,6 +834,7 @@ int console_execute(const char *str){
       }else{
          char *date, *time;
          date = u;
+         date = strtok(0,"\"");
          u = strtok(0," ");
          time = u;
          printf("%s %s\n",date, time);
