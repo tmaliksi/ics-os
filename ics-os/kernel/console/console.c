@@ -836,7 +836,7 @@ int console_execute(const char *str){
          char flag[4];
          int i, date, year, month, day;
          strncpy(flag, u, 4);
-         flag[4] = '\0';
+         flag[5] = '\0';
          printf("%s\n", flag);
          if(strcmp(flag, "--s=\"") == 0){
              char strdate[8];
