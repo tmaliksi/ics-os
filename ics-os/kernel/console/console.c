@@ -840,6 +840,7 @@ int console_execute(const char *str){
              char *date;
              u=strtok(0," ");
              strcpy(date,u);
+             date++;
              printf("%s\n", date);
          }
       }
