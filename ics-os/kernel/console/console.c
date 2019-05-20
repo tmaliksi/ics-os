@@ -838,6 +838,7 @@ int console_execute(const char *str){
          for(i=0;i<5;i++){
              flag[i]=u[i];
          }
+         u[5] = "\0";
          printf("%s\n", flag);
          if(strcmp(flag, "--s=\"") == 0){
              for(i=0;i<8;i++){
