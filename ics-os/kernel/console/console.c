@@ -833,20 +833,22 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char *date, *time, flag[5];
+         char *time, flag[5], date[8];
          int i;
          for(i=0;i<5;i++){
              flag[i]=u[i];
          }
-         date = u;
-         u = strtok(0,"\"");
-         time = u;
-         printf("%s %s %s\n",date, time, flag);
-         if(strlen(date) == 8){
-            char *time = strtok(0," ");
-            char *hour = u = strtok(0, ":");
-            char *min = strtok(date, "\"");
-            printf("%s %s %s\n", time, hour, min);
+         if(strcmp(flag, "--s="") == 0){
+             date = u;
+             u = strtok(0,"\"");
+             time = u;
+             printf("%s %s %s\n",date, time, flag);
+             if(strlen(date) == 8){
+                char *time = strtok(0," ");
+                char *hour = u = strtok(0, ":");
+                char *min = strtok(date, "\"");
+                printf("%s %s %s\n", time, hour, min);
+             }
          }
       }
    }else
