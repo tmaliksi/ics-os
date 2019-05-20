@@ -844,7 +844,7 @@ int console_execute(const char *str){
              printf("%s\n", date);
              u=strtok(u,"\"");
              strcpy(time,u);
-             printf("%s\n", time);
+             // printf("%s\n", time);
          }
       }
    }else
