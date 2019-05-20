@@ -835,7 +835,7 @@ int console_execute(const char *str){
       }else{
          char *date, *time, flag[5];
          int i;
-         for(i=0,i<5,i++){
+         for(i=0;i<5;i++){
              flag[i]=u[i];
          }
          date = u;
