@@ -833,8 +833,8 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char *time, *flag, strdate[8], strmonth[2], strday[2], stryear[4];
-         int i, month, day, year, hour, min;
+         char *time, strdate[8], flag[5];
+         int i, date;
          for(i=0;i<5;i++){
              flag[i]=u[i];
          }
@@ -842,25 +842,10 @@ int console_execute(const char *str){
              for(i=0;i<8;i++){
                  strdate[i]=u[i+5];
              }
-             for(i=0;i<2;i++){
-                 strmonth[i] = strdate[i];
-                 strday[i] = strdate[i+2];
-             }
-             if(atoi(strmonth) > 12 && atoi(strday) < 12){
-                 for(i=0;i<2;i++){
-                     strmonth[i] = strdate[i+2];
-                     strday[i] = strdate[i];
-                 }
-             }
-             for(i=0;i<4;i++){
-                 stryear[i] = strdate[i+4];
-             }
-             month = atoi(strmonth);
-             day = atoi(strday);
-             year = atoi(stryear);
+             date = atoi(strdate);
              u = strtok(0,"\"");
              time = u;
-             printf("%i %i %i\n", month, day, year);
+             printf("%i %s %s\n", date, time, flag);
              if(strlen(strdate) == 8){
                 char *time = strtok(0," ");
                 char *hour = u = strtok(0, ":");
