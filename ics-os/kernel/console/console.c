@@ -840,9 +840,7 @@ int console_execute(const char *str){
          }
          if(strcmp(flag, "--s=\"") == 0){
              for(i=0;i<8;i++){
-                 if(u[i+5]==flag[0])
-                    break;
-                 date[i]=u[i+5];
+                 date[i]=u[i+4];
              }
              u = strtok(0,"\"");
              time = u;
