@@ -833,13 +833,15 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char *time, flag[5], *date;
+         char *time, flag[5], date[8];
          int i;
          for(i=0;i<5;i++){
              flag[i]=u[i];
          }
          if(strcmp(flag, "--s=\"") == 0){
-             date = u;
+             for(i=0;i<8;i++){
+                 date[i]=u[i+5];
+             }
              u = strtok(0,"\"");
              time = u;
              printf("%s %s %s\n",date, time, flag);
