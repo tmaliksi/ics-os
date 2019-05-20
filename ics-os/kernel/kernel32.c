@@ -74,7 +74,6 @@ extern void textcolor(unsigned char c);
 
 //order is important for some include files, DO NOT CHANGE!
 #include <stdarg.h>
-#include <stdio.h>
 #include <limits.h>
 #include <math.h>
 
