@@ -835,9 +835,7 @@ int console_execute(const char *str){
       }else{
          char flag[4];
          int i, date, year, month, day;
-         for(i=0;i<5;i++){
-             flag[i]=u[i];
-         }
+         snprintf(flag, 6, "%s", u);
          printf("%s\n", flag);
          if(strcmp(flag, "--s=\"") == 0){
              char strdate[8];
