@@ -836,6 +836,12 @@ int console_execute(const char *str){
          char *flag;
          strcpy(flag,u);
          printf("%s\n", flag);
+         if(strcmp(flag, "--s") == 0){
+             char *date;
+             u=strtok(0," ");
+             strcpy(date,u);
+             printf("%s\n", date);
+         }
       }
    }else
    if (strcmp(u,"set") == 0){    //-- Sets an environment variable. Args: <key>=<value>
