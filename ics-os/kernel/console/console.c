@@ -870,7 +870,7 @@ int console_execute(const char *str){
          //        char *min = strtok(strdate, "\"");
          //        printf("%s %s %s\n", time, hour, min);
          //     }
-         }
+         // }
       }
    }else
    if (strcmp(u,"set") == 0){    //-- Sets an environment variable. Args: <key>=<value>
