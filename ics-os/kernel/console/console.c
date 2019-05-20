@@ -833,43 +833,9 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char flag[5];
-         int i, date, year, month, day;
-         strncpy(flag, u, 4);
-         flag[5] = '\0';
+         char *flag;
+         strcpy(flag,u);
          printf("%s\n", flag);
-         if(strcmp(flag, "--s=\"") == 0){
-             char strdate[8];
-             for(i=0;i<8;i++){
-                 strdate[i]=u[i+5];
-             }
-             printf("%s\n", strdate);
-             // for(i=0;i<2;i++){
-             //     strmonth[i] = strdate[i];
-             //     strday = strdate[i+2];
-             // }
-             // if(atoi(strmonth) > 12 && atoi(strday) <= 12){
-             //     for(i=0;i<2;i++){
-             //         strmonth[i] = strdate[i+2];
-             //         strday = strdate[i];
-             //     }
-             // }
-             // for(i=0;i<4;i++){
-             //     stryear[i] = strdate[i+4];
-             // }
-             // date = atoi(strdate);
-             // year = atoi(stryear);
-             // month = atoi(strmonth);
-             // day = atoi(strday);
-             // u = strtok(0,"\"");
-             // time = u;
-             // printf("%i %i %i %i\n", date, year, month, day);
-             // if(strlen(strdate) == 8){
-             //    char *time = strtok(0," ");
-             //    char *hour = u = strtok(0, ":");
-             //    char *min = strtok(strdate, "\"");
-             //    printf("%s %s %s\n", time, hour, min);
-             // }
          }
       }
    }else
