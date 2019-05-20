@@ -833,7 +833,7 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char flag[4];
+         char flag[5];
          int i, date, year, month, day;
          strncpy(flag, u, 4);
          flag[5] = '\0';
