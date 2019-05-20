@@ -841,7 +841,7 @@ int console_execute(const char *str){
          u[5] = '\0';
          printf("%s\n", flag);
          if(strcmp(flag, "--s=\"") == 0){
-             char *strdate
+             char *strdate;
              for(i=0;i<8;i++){
                  strdate[i]=u[i+5];
              }
