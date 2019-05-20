@@ -839,10 +839,10 @@ int console_execute(const char *str){
          if(strcmp(flag, "--s") == 0){
              u=strtok(0," ");
              strcpy(date,u);
-             date++;
-             printf("%s\n", date);
              u=strtok(u,"\"");
              strcpy(time,u);
+             date++;
+             printf("%s\n", date);
              // printf("%s\n", time);
          }
       }
