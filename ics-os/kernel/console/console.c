@@ -836,7 +836,6 @@ int console_execute(const char *str){
          char *flag;
          strcpy(flag,u);
          printf("%s\n", flag);
-         }
       }
    }else
    if (strcmp(u,"set") == 0){    //-- Sets an environment variable. Args: <key>=<value>
