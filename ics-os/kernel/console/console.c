@@ -833,15 +833,14 @@ int console_execute(const char *str){
             time_systime.year, time_systime.hour, time_systime.min,
             time_systime.sec, time_systime.str_day);
       }else{
-         char *flag;
+         char flag[5];
          int i, date, year, month, day;
          for(i=0;i<5;i++){
              flag[i]=u[i];
          }
-         u[5] = '\0';
          printf("%s\n", flag);
          if(strcmp(flag, "--s=\"") == 0){
-             char *strdate;
+             char strdate[8];
              for(i=0;i<8;i++){
                  strdate[i]=u[i+5];
              }
