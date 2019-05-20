@@ -837,11 +837,14 @@ int console_execute(const char *str){
          strcpy(flag,u);
          printf("%s\n", flag);
          if(strcmp(flag, "--s") == 0){
-             char *date;
+             char *date, *time;
              u=strtok(0," ");
              strcpy(date,u);
              date++;
              printf("%s\n", date);
+             u=strtok(0,"\"");
+             strcpy(time,u);
+            printf("%s\n", time); 
          }
       }
    }else
