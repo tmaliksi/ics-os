@@ -838,7 +838,7 @@ int console_execute(const char *str){
          for(i=0;i<5;i++){
              flag[i]=u[i];
          }
-         if(strcmp(flag, "--s="") == 0){
+         if(strcmp(flag, "--s=\"") == 0){
              date = u;
              u = strtok(0,"\"");
              time = u;
